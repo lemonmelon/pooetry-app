@@ -118,22 +118,29 @@ public class ToiletWallActivity extends Activity {
                     result[i] = note;
                 }
 
-                Log.d("pooetry", "Got resulting strings: " + result);
+                Log.d("pooetry", "Got resulting strings:");
+                for(String s : result){
+                    Log.d("pooetry", "- " + s);
+                }
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        container.removeAllViews();
+
                         for(int i = 0; i < result.length; i++) {
-                            container.removeAllViews();
+                            String s = result[i];
 
                             TextView v = new TextView(ctx);
-                            v.setText(result[i]);
+                            v.setText(s);
 
-                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(400, ViewGroup.LayoutParams.WRAP_CONTENT);
-                            params.leftMargin = i * 500;
-                            params.topMargin = i * 25;
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(375, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            params.leftMargin = i * 450;
+                            params.topMargin = i * 40;
 
                             container.addView(v, params);
+
+                            Log.d("pooetry", "Added string " + s + " at " + i * 450 + "," + i * 40);
                         }
                     }
                 });
