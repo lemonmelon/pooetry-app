@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -96,6 +97,17 @@ public class ToiletWallActivity extends Activity {
 
                 if(notes.length() < 1) {
                     Log.d("pooetry", "No notes");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            container.removeAllViews();
+
+                            TextView failureText = new TextView(ctx);
+                            failureText.setText("Failed to load notes");
+
+                            container.addView(failureText);
+                        }
+                    });
                     return null;
                 }
 
@@ -112,9 +124,16 @@ public class ToiletWallActivity extends Activity {
                     @Override
                     public void run() {
                         for(int i = 0; i < result.length; i++) {
+                            container.removeAllViews();
+
                             TextView v = new TextView(ctx);
                             v.setText(result[i]);
-                            container.addView(v);
+
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(400, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            params.leftMargin = i * 500;
+                            params.topMargin = i * 25;
+
+                            container.addView(v, params);
                         }
                     }
                 });
