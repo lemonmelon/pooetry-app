@@ -144,6 +144,7 @@ public class ToiletWallActivity extends Activity {
                                 topMarginCursor += 40;
                             }
                             else {
+                                //TODO: Really annoying that we can't get text to fill the height, then expand width to fit :-(
                                 params = new RelativeLayout.LayoutParams(800, 375);
                                 params.leftMargin = leftMarginCursor;
                                 params.topMargin = topMarginCursor;
