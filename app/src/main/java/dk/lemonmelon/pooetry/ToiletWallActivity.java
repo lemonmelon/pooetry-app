@@ -128,19 +128,32 @@ public class ToiletWallActivity extends Activity {
                     public void run() {
                         container.removeAllViews();
 
-                        for(int i = 0; i < result.length; i++) {
-                            String s = result[i];
-
+                        int leftMarginCursor = 0;
+                        int topMarginCursor = 0;
+                        for(String s : result) {
                             TextView v = new TextView(ctx);
                             v.setText(s);
 
-                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(375, ViewGroup.LayoutParams.WRAP_CONTENT);
-                            params.leftMargin = i * 450;
-                            params.topMargin = i * 40;
+                            RelativeLayout.LayoutParams params;
+
+                            if(Math.random() * 100 < 50.) {
+                                params = new RelativeLayout.LayoutParams(375, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                params.leftMargin = leftMarginCursor;
+                                params.topMargin = topMarginCursor;
+                                leftMarginCursor += 450;
+                                topMarginCursor += 40;
+                            }
+                            else {
+                                params = new RelativeLayout.LayoutParams(800, 375);
+                                params.leftMargin = leftMarginCursor;
+                                params.topMargin = topMarginCursor;
+                                leftMarginCursor += 40;
+                                topMarginCursor += 450;
+                            }
 
                             container.addView(v, params);
 
-                            Log.d("pooetry", "Added string " + s + " at " + i * 450 + "," + i * 40);
+                            Log.d("pooetry", "Added string " + s + " at " + leftMarginCursor + "," + topMarginCursor);
                         }
                     }
                 });
