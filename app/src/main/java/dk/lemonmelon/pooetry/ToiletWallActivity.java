@@ -16,11 +16,17 @@ import android.widget.HorizontalScrollView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +36,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 
 public class ToiletWallActivity extends Activity {
@@ -52,7 +59,10 @@ public class ToiletWallActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 AlertDialog thisDialog = (AlertDialog) dialog;
                 EditText textField = (EditText) thisDialog.findViewById(R.id.dialog_input_text_field);
-                Log.d("pooetry", "Got that sweet text input " + textField.getText().toString());
+                String textInput = textField.getText().toString();
+                Log.d("pooetry", "Got that sweet text input " + textInput);
+
+                startNotePostingRequest(getApplicationContext(), textInput);
             }
         });
         final AlertDialog inputDialog = inputDialogBuilder.create();
@@ -213,6 +223,61 @@ public class ToiletWallActivity extends Activity {
                 Log.e("pooetry", "Got JSONException while parsing body string " + e);
             }
 
+            return null;
+        }
+    }
+
+    private void startNotePostingRequest(Context ctx, String note) {
+        new NotePostingRequestTask(ctx, note).execute();
+    }
+
+    private class NotePostingRequestTask extends AsyncTask<Void, Void, Void> {
+        private String input;
+        private Context ctx;
+
+        public NotePostingRequestTask(Context ctx, String note) {
+            this.ctx = ctx;
+            JSONObject o = new JSONObject();
+            try {
+                o.put("text", note);
+                o.put("long", "nulled");
+                o.put("lat", "nulled");
+                this.input = o.toString();
+            }
+            catch(JSONException e) {
+                Log.e("pooetry", "Failed to prepare data for NotePostingRequestTask: " + e);
+            }
+        }
+
+        protected Void doInBackground(Void... nothings) {
+            final Context ctx = this.ctx;
+
+            try {
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpPost req = new HttpPost("http://api.pooetry.lemonmelon.dk:3009/note");
+                req.setEntity(new StringEntity(input));
+                req.setHeader("Content-Type", "application/json");
+                HttpResponse res = httpClient.execute(req);
+                if (res.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                    Log.e("pooetry", "Failed to post note. Instead, got " + res.getStatusLine().getStatusCode());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Failed to post note", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    return null;
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Note poosted", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (IOException e) {
+                Log.e("pooetry", "Got IOException while getting data from online " + e);
+                return null;
+            }
             return null;
         }
     }
