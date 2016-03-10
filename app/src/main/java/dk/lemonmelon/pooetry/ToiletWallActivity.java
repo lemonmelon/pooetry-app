@@ -5,6 +5,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.RelativeLayout;
@@ -35,8 +38,37 @@ public class ToiletWallActivity extends Activity {
 
         RelativeLayout container = (RelativeLayout) findViewById(R.id.content_container);
 
-        ScrollView verticalScrollView = (ScrollView) findViewById(R.id.vertical_scroll_view);
-        HorizontalScrollView horizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontal_scroll_view);
+        final ScrollView verticalScrollView = (ScrollView) findViewById(R.id.vertical_scroll_view);
+        final HorizontalScrollView horizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontal_scroll_view);
+
+        final GestureDetector gestureDetector = new GestureDetector(this, new OnDoubleTapListener(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("pooetry", "Doubletap");
+            }
+        }));
+
+        verticalScrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                boolean goOn = gestureDetector.onTouchEvent(event);
+                if(!goOn) {
+                    return false;
+                }
+                return verticalScrollView.onTouchEvent(event);
+            }
+        });
+
+        horizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                boolean goOn = gestureDetector.onTouchEvent(event);
+                if(!goOn) {
+                    return false;
+                }
+                return horizontalScrollView.onTouchEvent(event);
+            }
+        });
 
         //TODO: Make this scrolly shit work so we start in center
         //verticalScrollView.scrollTo(0, 15);
@@ -166,6 +198,25 @@ public class ToiletWallActivity extends Activity {
             }
 
             return null;
+        }
+    }
+
+    private class OnDoubleTapListener extends GestureDetector.SimpleOnGestureListener {
+        Runnable _toBeDone;
+
+        public OnDoubleTapListener(Runnable toBeDone) {
+            _toBeDone = toBeDone;
+        }
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            _toBeDone.run();
+            return true;
         }
     }
 }
