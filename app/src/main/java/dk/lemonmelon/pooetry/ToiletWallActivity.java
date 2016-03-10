@@ -1,7 +1,9 @@
 package dk.lemonmelon.pooetry;
 
 import android.app.Activity;
+import android.support.v7.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -41,10 +44,23 @@ public class ToiletWallActivity extends Activity {
         final ScrollView verticalScrollView = (ScrollView) findViewById(R.id.vertical_scroll_view);
         final HorizontalScrollView horizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontal_scroll_view);
 
+        AlertDialog.Builder inputDialogBuilder = new AlertDialog.Builder(this);
+        inputDialogBuilder.setTitle("Write a pooem");
+        inputDialogBuilder.setView(R.layout.dialog_input);
+        inputDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                AlertDialog thisDialog = (AlertDialog) dialog;
+                EditText textField = (EditText) thisDialog.findViewById(R.id.dialog_input_text_field);
+                Log.d("pooetry", "Got that sweet text input " + textField.getText().toString());
+            }
+        });
+        final AlertDialog inputDialog = inputDialogBuilder.create();
+
         final GestureDetector gestureDetector = new GestureDetector(this, new OnDoubleTapListener(new Runnable() {
             @Override
             public void run() {
-                Log.d("pooetry", "Doubletap");
+                inputDialog.show();
             }
         }));
 
