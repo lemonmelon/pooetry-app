@@ -191,6 +191,7 @@ public class ToiletWallActivity extends Activity {
                         for(String s : result) {
                             TextView v = new TextView(ctx);
                             v.setText(s);
+                            v.setTextSize(12f + (float)(Math.random() * 10));
 
                             RelativeLayout.LayoutParams params;
 
