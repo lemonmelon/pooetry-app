@@ -126,7 +126,7 @@ public class ToiletWallActivity extends Activity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 gestureDetector.onTouchEvent(event);
-                return false;
+                return verticalScrollView.onTouchEvent(event);
             }
         });
 
