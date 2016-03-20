@@ -92,30 +92,32 @@ public class ToiletWallActivity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 gestureDetector.onTouchEvent(event);
 
+                int action = event.getAction();
+
+                if(action != MotionEvent.ACTION_MOVE && action != MotionEvent.ACTION_UP) {
+                    return true;
+                }
+
                 curX = event.getX();
                 curY = event.getY();
                 int dx = (int) (mx - curX);
                 int dy = (int) (my - curY);
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_MOVE:
-                        if (started) {
-                            Log.d("pooetry", "My scroll by");
-                            verticalScrollView.scrollBy(0, dy);
-                            horizontalScrollView.scrollBy(dx, 0);
-                        } else {
-                            Log.d("pooetry", "My start scroll");
-                            started = true;
-                        }
-                        mx = curX;
-                        my = curY;
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        Log.d("pooetry", "My end scroll");
+
+                if(action == MotionEvent.ACTION_MOVE) {
+                    if(started) {
                         verticalScrollView.scrollBy(0, dy);
                         horizontalScrollView.scrollBy(dx, 0);
-                        started = false;
-                        break;
+                    }
+                    started = true;
+                    mx = curX;
+                    my = curY;
+                    return true;
                 }
+
+                verticalScrollView.scrollBy(0, dy);
+                horizontalScrollView.scrollBy(dx, 0);
+                started = false;
+
                 return true;
             }
         });
