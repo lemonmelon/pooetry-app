@@ -1,7 +1,7 @@
 package dk.lemonmelon.pooetry;
 
 import android.app.Activity;
-import android.support.v7.app.AlertDialog;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -136,6 +136,7 @@ public class ToiletWallActivity extends Activity {
             }
             catch(IOException e) {
                 Log.e("pooetry", "Got IOException while getting data from online " + e);
+                reportError();
                 return null;
             }
 
@@ -148,6 +149,7 @@ public class ToiletWallActivity extends Activity {
             }
             catch(IOException e) {
                 Log.e("pooetry", "Got IOException while reading body stream " + e);
+                reportError();
                 return null;
             }
 
@@ -157,17 +159,7 @@ public class ToiletWallActivity extends Activity {
 
                 if(notes.length() < 1) {
                     Log.d("pooetry", "No notes");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            container.removeAllViews();
-
-                            TextView failureText = new TextView(ctx);
-                            failureText.setText("Failed to load notes");
-
-                            container.addView(failureText);
-                        }
-                    });
+                    reportError();
                     return null;
                 }
 
@@ -224,9 +216,36 @@ public class ToiletWallActivity extends Activity {
             }
             catch(JSONException e) {
                 Log.e("pooetry", "Got JSONException while parsing body string " + e);
+                reportError();
             }
 
             return null;
+        }
+
+        private void reportError() {
+            Log.e("pooetry", "Something went wrong/failed to load notes/showing dialog and closing");
+
+            final RelativeLayout container = this.container;
+
+            final AlertDialog.Builder errorAlertBuilder = new AlertDialog.Builder(this.ctx);
+            errorAlertBuilder.setTitle("Failed to load notes");
+            errorAlertBuilder.setMessage("Something went wrong while requesting notes from the internet. Maybe your connection is bad? Start app again to retry.");
+            errorAlertBuilder.setNegativeButton("Shutdown", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    AlertDialog errorAlert = errorAlertBuilder.create();
+                    errorAlert.setCanceledOnTouchOutside(false);
+                    container.removeAllViews();
+                    errorAlert.show();
+                }
+            });
         }
     }
 

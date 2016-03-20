@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="No"
-            android:backgroundTint="#f2f2f2"
+            android:backgroundTint="#f8f8f8"
             android:id="@+id/intro_no_button"/>
 
     </LinearLayout>
