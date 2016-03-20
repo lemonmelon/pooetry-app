@@ -85,24 +85,46 @@ public class ToiletWallActivity extends Activity {
         }));
 
         verticalScrollView.setOnTouchListener(new View.OnTouchListener() {
+            private float mx, my, curX, curY;
+            private boolean started = false;
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                boolean goOn = gestureDetector.onTouchEvent(event);
-                if(!goOn) {
-                    return false;
+                gestureDetector.onTouchEvent(event);
+
+                curX = event.getX();
+                curY = event.getY();
+                int dx = (int) (mx - curX);
+                int dy = (int) (my - curY);
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        if (started) {
+                            Log.d("pooetry", "My scroll by");
+                            verticalScrollView.scrollBy(0, dy);
+                            horizontalScrollView.scrollBy(dx, 0);
+                        } else {
+                            Log.d("pooetry", "My start scroll");
+                            started = true;
+                        }
+                        mx = curX;
+                        my = curY;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        Log.d("pooetry", "My end scroll");
+                        verticalScrollView.scrollBy(0, dy);
+                        horizontalScrollView.scrollBy(dx, 0);
+                        started = false;
+                        break;
                 }
-                return verticalScrollView.onTouchEvent(event);
+                return true;
             }
         });
 
         horizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                boolean goOn = gestureDetector.onTouchEvent(event);
-                if(!goOn) {
-                    return false;
-                }
-                return horizontalScrollView.onTouchEvent(event);
+                gestureDetector.onTouchEvent(event);
+                return false;
             }
         });
 
