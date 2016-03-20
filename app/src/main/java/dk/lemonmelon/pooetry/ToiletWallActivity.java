@@ -121,7 +121,7 @@ public class ToiletWallActivity extends Activity {
             final RelativeLayout container = this.container;
             final Context ctx = this.ctx;
 
-            InputStream bodyStream = null;
+            BufferedReader r = null;
             try {
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpResponse res = httpClient.execute(new HttpGet("http://api.pooetry.lemonmelon.dk:3009/content?long=x&lat=y"));
@@ -129,14 +129,14 @@ public class ToiletWallActivity extends Activity {
                     Log.e("pooetry", "Failed to get content. Instead, got " + res);
                     return null;
                 }
-                bodyStream = res.getEntity().getContent();
+                InputStream bodyStream = res.getEntity().getContent();
+                r = new BufferedReader(new InputStreamReader(bodyStream, "UTF8"));
             }
             catch(IOException e) {
                 Log.e("pooetry", "Got IOException while getting data from online " + e);
                 return null;
             }
 
-            BufferedReader r = new BufferedReader(new InputStreamReader(bodyStream));
             StringBuilder bodyStr = new StringBuilder();
             String line;
             try {
@@ -257,7 +257,7 @@ public class ToiletWallActivity extends Activity {
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpPost req = new HttpPost("http://api.pooetry.lemonmelon.dk:3009/note");
                 req.setEntity(new StringEntity(input));
-                req.setHeader("Content-Type", "application/json");
+                req.setHeader("Content-Type", "application/json; charset=utf-8");
                 HttpResponse res = httpClient.execute(req);
                 if (res.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                     Log.e("pooetry", "Failed to post note. Instead, got " + res.getStatusLine().getStatusCode());
