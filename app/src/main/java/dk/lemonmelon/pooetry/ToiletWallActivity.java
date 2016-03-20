@@ -1,7 +1,7 @@
 package dk.lemonmelon.pooetry;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -65,9 +65,9 @@ public class ToiletWallActivity extends Activity {
         final GestureDetector gestureDetector = new GestureDetector(this, new OnDoubleTapListener(new Runnable() {
             @Override
             public void run() {
+                inputDialog.show();
                 EditText textField = (EditText) inputDialog.findViewById(R.id.dialog_input_text_field);
                 textField.setText("");
-                inputDialog.show();
             }
         }));
 
