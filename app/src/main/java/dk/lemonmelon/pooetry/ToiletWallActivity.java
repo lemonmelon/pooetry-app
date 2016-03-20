@@ -1,6 +1,9 @@
 package dk.lemonmelon.pooetry;
 
 import android.app.Activity;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.v7.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,11 +38,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class ToiletWallActivity extends Activity {
+    private Location _location = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_toilet_wall);
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        _location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        if(_location == null) {
+            Toast.makeText(this, "Failed to get location. Turn on GPS, then try to start the app again.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
 
         RelativeLayout container = (RelativeLayout) findViewById(R.id.content_container);
 
@@ -121,7 +134,7 @@ public class ToiletWallActivity extends Activity {
             BufferedReader r = null;
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpResponse res = httpClient.execute(new HttpGet("http://api.pooetry.lemonmelon.dk:3009/content?long=x&lat=y"));
+                HttpResponse res = httpClient.execute(new HttpGet("http://api.pooetry.lemonmelon.dk:3009/content?long=" + _location.getLongitude() + "&lat=" + _location.getLatitude()));
                 if(res.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                     Log.e("pooetry", "Failed to get content. Instead, got " + res);
                     return null;
@@ -257,8 +270,8 @@ public class ToiletWallActivity extends Activity {
             JSONObject o = new JSONObject();
             try {
                 o.put("text", note);
-                o.put("long", "nulled");
-                o.put("lat", "nulled");
+                o.put("long", "" + _location.getLongitude());
+                o.put("lat", "" + _location.getLatitude());
                 this.input = o.toString();
             }
             catch(JSONException e) {
