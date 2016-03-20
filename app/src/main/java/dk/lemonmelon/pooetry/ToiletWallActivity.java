@@ -39,6 +39,7 @@ import java.io.InputStreamReader;
 
 public class ToiletWallActivity extends Activity {
     private Location _location = null;
+    private String baseUrl = "http://api.pooetry.lemonmelon.dk:3009";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,7 +159,7 @@ public class ToiletWallActivity extends Activity {
             BufferedReader r = null;
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpResponse res = httpClient.execute(new HttpGet("http://api.pooetry.lemonmelon.dk:3009/content?long=" + _location.getLongitude() + "&lat=" + _location.getLatitude()));
+                HttpResponse res = httpClient.execute(new HttpGet(baseUrl + "/content?long=" + _location.getLongitude() + "&lat=" + _location.getLatitude()));
                 if(res.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                     Log.e("pooetry", "Failed to get content. Instead, got " + res);
                     return null;
@@ -308,7 +309,7 @@ public class ToiletWallActivity extends Activity {
 
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpPost req = new HttpPost("http://api.pooetry.lemonmelon.dk:3009/note");
+                HttpPost req = new HttpPost(baseUrl + "/note");
                 req.setEntity(new StringEntity(input));
                 req.setHeader("Content-Type", "application/json; charset=utf-8");
                 HttpResponse res = httpClient.execute(req);
