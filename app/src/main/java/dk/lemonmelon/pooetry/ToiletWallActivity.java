@@ -28,6 +28,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -310,7 +311,7 @@ public class ToiletWallActivity extends Activity {
             try {
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpPost req = new HttpPost(baseUrl + "/note");
-                req.setEntity(new StringEntity(input));
+                req.setEntity(new StringEntity(input, HTTP.UTF_8));
                 req.setHeader("Content-Type", "application/json; charset=utf-8");
                 HttpResponse res = httpClient.execute(req);
                 if (res.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
