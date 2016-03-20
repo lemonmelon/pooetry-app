@@ -70,6 +70,8 @@ public class ToiletWallActivity extends Activity {
         final GestureDetector gestureDetector = new GestureDetector(this, new OnDoubleTapListener(new Runnable() {
             @Override
             public void run() {
+                EditText textField = (EditText) inputDialog.findViewById(R.id.dialog_input_text_field);
+                textField.setText("");
                 inputDialog.show();
             }
         }));
