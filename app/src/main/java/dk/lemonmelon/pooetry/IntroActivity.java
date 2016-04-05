@@ -10,13 +10,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 public class IntroActivity extends Activity {
-    private Location _location;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,17 +38,12 @@ public class IntroActivity extends Activity {
             }
         });
 
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        _location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        if(_location != null) {
-            return;
-        }
-
-        triggerLoadingOfLocation(locationManager);
+        triggerLoadingOfLocation();
     }
 
-    public void triggerLoadingOfLocation(LocationManager locationManager) {
+    public void triggerLoadingOfLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
         final Context ctx = this;
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -57,7 +51,7 @@ public class IntroActivity extends Activity {
         locationManager.requestSingleUpdate(criteria, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                _location = location;
+                Log.i("Pooetry location loading", "Loaded a location!");
             }
 
             @Override
