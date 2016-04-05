@@ -71,6 +71,35 @@ public class ToiletWallActivity extends Activity {
             }
         }));
 
+        wireUpPanningView(verticalScrollView, horizontalScrollView, gestureDetector);
+
+        //TODO: Make this scrolly shit work so we start in center
+        //verticalScrollView.scrollTo(0, 15);
+        //horizontalScrollView.scrollTo(5000, 0);
+        //Log.d("pooetry", "scrolled");
+
+        startContentRequestTask(this, container);
+    }
+
+    private AlertDialog createPooemInputDialog() {
+        AlertDialog.Builder inputDialogBuilder = new AlertDialog.Builder(this);
+        inputDialogBuilder.setTitle("Write a pooem");
+        inputDialogBuilder.setView(R.layout.dialog_input);
+        inputDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                AlertDialog thisDialog = (AlertDialog) dialog;
+                EditText textField = (EditText) thisDialog.findViewById(R.id.dialog_input_text_field);
+                String textInput = textField.getText().toString();
+                Log.d("pooetry", "Got that sweet text input " + textInput);
+
+                startNotePostingRequest(getApplicationContext(), textInput);
+            }
+        });
+        return inputDialogBuilder.create();
+    }
+
+    private void wireUpPanningView(final ScrollView verticalScrollView, final HorizontalScrollView horizontalScrollView, final GestureDetector gestureDetector) {
         verticalScrollView.setOnTouchListener(new View.OnTouchListener() {
             private float mx, my, curX, curY;
             private boolean started = false;
@@ -116,31 +145,6 @@ public class ToiletWallActivity extends Activity {
                 return verticalScrollView.onTouchEvent(event);
             }
         });
-
-        //TODO: Make this scrolly shit work so we start in center
-        //verticalScrollView.scrollTo(0, 15);
-        //horizontalScrollView.scrollTo(5000, 0);
-        //Log.d("pooetry", "scrolled");
-
-        startContentRequestTask(this, container);
-    }
-
-    private AlertDialog createPooemInputDialog() {
-        AlertDialog.Builder inputDialogBuilder = new AlertDialog.Builder(this);
-        inputDialogBuilder.setTitle("Write a pooem");
-        inputDialogBuilder.setView(R.layout.dialog_input);
-        inputDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                AlertDialog thisDialog = (AlertDialog) dialog;
-                EditText textField = (EditText) thisDialog.findViewById(R.id.dialog_input_text_field);
-                String textInput = textField.getText().toString();
-                Log.d("pooetry", "Got that sweet text input " + textInput);
-
-                startNotePostingRequest(getApplicationContext(), textInput);
-            }
-        });
-        return inputDialogBuilder.create();
     }
 
     private void startContentRequestTask(Context ctx, RelativeLayout container) {
