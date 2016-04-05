@@ -60,22 +60,7 @@ public class ToiletWallActivity extends Activity {
 
         final ScrollView verticalScrollView = (ScrollView) findViewById(R.id.vertical_scroll_view);
         final HorizontalScrollView horizontalScrollView = (HorizontalScrollView) findViewById(R.id.horizontal_scroll_view);
-
-        AlertDialog.Builder inputDialogBuilder = new AlertDialog.Builder(this);
-        inputDialogBuilder.setTitle("Write a pooem");
-        inputDialogBuilder.setView(R.layout.dialog_input);
-        inputDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                AlertDialog thisDialog = (AlertDialog) dialog;
-                EditText textField = (EditText) thisDialog.findViewById(R.id.dialog_input_text_field);
-                String textInput = textField.getText().toString();
-                Log.d("pooetry", "Got that sweet text input " + textInput);
-
-                startNotePostingRequest(getApplicationContext(), textInput);
-            }
-        });
-        final AlertDialog inputDialog = inputDialogBuilder.create();
+        final AlertDialog inputDialog = createPooemInputDialog();
 
         final GestureDetector gestureDetector = new GestureDetector(this, new OnDoubleTapListener(new Runnable() {
             @Override
@@ -137,6 +122,24 @@ public class ToiletWallActivity extends Activity {
         //Log.d("pooetry", "scrolled");
 
         startContentRequestTask(this, container);
+    }
+
+    private AlertDialog createPooemInputDialog() {
+        AlertDialog.Builder inputDialogBuilder = new AlertDialog.Builder(this);
+        inputDialogBuilder.setTitle("Write a pooem");
+        inputDialogBuilder.setView(R.layout.dialog_input);
+        inputDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                AlertDialog thisDialog = (AlertDialog) dialog;
+                EditText textField = (EditText) thisDialog.findViewById(R.id.dialog_input_text_field);
+                String textInput = textField.getText().toString();
+                Log.d("pooetry", "Got that sweet text input " + textInput);
+
+                startNotePostingRequest(getApplicationContext(), textInput);
+            }
+        });
+        return inputDialogBuilder.create();
     }
 
     private void startContentRequestTask(Context ctx, RelativeLayout container) {
