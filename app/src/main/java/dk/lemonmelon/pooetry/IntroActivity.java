@@ -38,30 +38,7 @@ public class IntroActivity extends Activity {
             }
         });
 
-        triggerLoadingOfLocation();
-    }
-
-    public void triggerLoadingOfLocation() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        final Context ctx = this;
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-
-        locationManager.requestSingleUpdate(criteria, new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                Log.i("Pooetry location loading", "Loaded a location!");
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-            @Override
-            public void onProviderEnabled(String provider) {}
-
-            @Override
-            public void onProviderDisabled(String provider) {}
-        }, null);
+        LocationLoader locationLoader = new LocationLoader(this);
+        locationLoader.triggerLoadingOfLocation();
     }
 }
