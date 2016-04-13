@@ -47,8 +47,8 @@ public class ToiletWallActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_toilet_wall);
 
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        _location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        LocationLoader locationLoader = new LocationLoader(this);
+        _location = locationLoader.getLocation();
 
         if(_location == null) {
             Toast.makeText(this, "Failed to get location. Turn on GPS, then try to start the app again.", Toast.LENGTH_LONG).show();

@@ -9,15 +9,30 @@ import android.os.Bundle
 import android.util.Log
 
 class LocationLoader(context: Context) {
-    var locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private var waitingForLocation = false
+    private var locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    var location: Location? = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+    init {
+        if(location == null && !waitingForLocation) {
+            triggerLoadingOfLocation()
+        }
+    }
 
     fun triggerLoadingOfLocation() {
+        if(waitingForLocation) {
+            return
+        }
+        waitingForLocation = true
+
         var criteria = Criteria()
         criteria.accuracy = Criteria.ACCURACY_FINE
 
         locationManager.requestSingleUpdate(criteria, object: LocationListener {
-            override fun onLocationChanged(location: Location) {
-                Log.i("Pooetry location", "Loaded a location!")
+            override fun onLocationChanged(newLocation: Location) {
+                location = newLocation
+                waitingForLocation = false
+                Log.i("Pooetry location", "Got a new location")
             }
 
             override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
