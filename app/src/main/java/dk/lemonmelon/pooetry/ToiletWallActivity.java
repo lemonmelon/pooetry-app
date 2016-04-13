@@ -110,7 +110,12 @@ public class ToiletWallActivity extends Activity {
 
                 int action = event.getAction();
 
-                if(action != MotionEvent.ACTION_MOVE && action != MotionEvent.ACTION_UP) {
+                if(action == MotionEvent.ACTION_UP) {
+                    started = false;
+                    return true;
+                }
+
+                if(action != MotionEvent.ACTION_MOVE) {
                     return true;
                 }
 
@@ -129,10 +134,6 @@ public class ToiletWallActivity extends Activity {
                     my = curY;
                     return true;
                 }
-
-                verticalScrollView.scrollBy(0, dy);
-                horizontalScrollView.scrollBy(dx, 0);
-                started = false;
 
                 return true;
             }
