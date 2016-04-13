@@ -103,6 +103,7 @@ public class ToiletWallActivity extends Activity {
         verticalScrollView.setOnTouchListener(new View.OnTouchListener() {
             private float mx, my, curX, curY;
             private boolean started = false;
+            private long lastMoveAt = 0;
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -116,6 +117,14 @@ public class ToiletWallActivity extends Activity {
                 }
 
                 if(action != MotionEvent.ACTION_MOVE) {
+                    return true;
+                }
+
+                //ignore move if it has been 100 millis since last move--probably a wonky one.
+                long now = System.currentTimeMillis();
+                if(now - lastMoveAt > 100l) {
+                    Log.d("Pooetry pan", "Ignored a pan: it was more than 100 ms after last move event; probably something wonky.");
+                    lastMoveAt = now;
                     return true;
                 }
 
